@@ -72,6 +72,12 @@ On usb keyboard, logon as root, password cubox-i.
     bound to 192.168.0.17 -- renewal in 40960 seconds.
     root@cubox-i:~#
 
+Test network connectivity by doing a DNS lookup.
+
+    root@cubox-i:~# getent hosts www.google.com
+    2a00:1450:4009:80f::2004 www.google.com
+    root@cubox-i:~#
+
 ## Install ssh
   
     root@cubox-i:~# apt-get install ssh
@@ -79,6 +85,20 @@ On usb keyboard, logon as root, password cubox-i.
 ## Log onto cubox via ssh instead of using USB keyboard
 
     [root@localhost ~]# ssh 192.168.0.17
+    The authenticity of host '192.168.0.17 (192.168.0.17)' can't be established.
+    ECDSA key fingerprint is c5:1d:ee:50:de:e9:ca:93:29:52:16:24:a3:3c:e2:8e.
+    Are you sure you want to continue connecting (yes/no)? yes
+    Warning: Permanently added '192.168.0.17' (ECDSA) to the list of known hosts.
+    root@192.168.0.17's password:
+    Linux cubox-i.localdomain 3.0.35-8 #1 SMP PREEMPT Sun Jan 26 17:27:04 MST 2014 armv7l
+        
+    The programs included with the Debian GNU/Linux system are free software;
+    the exact distribution terms for each program are described in the
+    individual files in /usr/share/doc/*/copyright.
+    
+    Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+    permitted by applicable law.
+    root@cubox-i:~#
 
 ## Resize root filesystem to use entire SD card
 
