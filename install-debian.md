@@ -79,3 +79,109 @@ On usb keyboard, logon as root, password cubox-i.
 ## Log onto cubox via ssh instead of using USB keyboard
 
     [root@localhost ~]# ssh 192.168.0.17
+
+## Resize root filesystem to use entire SD card
+
+root filesystem currently 689MB, with 58% used.  Resize it to use whole SD card.
+
+    root@cubox-i:~# df -h /
+    Filesystem      Size  Used Avail Use% Mounted on
+    /dev/root       689M  379M  276M  58% /
+    root@cubox-i:~# 
+
+Review current partition layout.
+
+    root@cubox-i:~# fdisk -l
+    
+    Disk /dev/mmcblk0: 7892 MB, 7892631552 bytes
+    32 heads, 32 sectors/track, 15054 cylinders, total 15415296 sectors
+    Units = sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disk identifier: 0x2fc08b14
+    
+            Device Boot      Start         End      Blocks   Id  System
+    /dev/mmcblk0p1            1024       12287        5632   83  Linux
+    /dev/mmcblk0p2           12288     1445887      716800   83  Linux
+    root@cubox-i:~# 
+
+Delete existing partition 2, recreate as remainder of SD card after partition 1.
+
+    root@cubox-i:~# fdisk /dev/mmcblk0
+    
+    Command (m for help): p
+    
+    Disk /dev/mmcblk0: 7892 MB, 7892631552 bytes
+    32 heads, 32 sectors/track, 15054 cylinders, total 15415296 sectors
+    Units = sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disk identifier: 0x2fc08b14
+    
+            Device Boot      Start         End      Blocks   Id  System
+    /dev/mmcblk0p1            1024       12287        5632   83  Linux
+    /dev/mmcblk0p2           12288     1445887      716800   83  Linux
+    
+    Command (m for help): d
+    Partition number (1-4): 2
+    
+    Command (m for help): p
+    
+    Disk /dev/mmcblk0: 7892 MB, 7892631552 bytes
+    32 heads, 32 sectors/track, 15054 cylinders, total 15415296 sectors
+    Units = sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disk identifier: 0x2fc08b14
+    
+            Device Boot      Start         End      Blocks   Id  System
+    /dev/mmcblk0p1            1024       12287        5632   83  Linux
+    
+    Command (m for help): n
+    Partition type:
+       p   primary (1 primary, 0 extended, 3 free)
+       e   extended
+    Select (default p): p
+    Partition number (1-4, default 2): 2
+    First sector (12288-15415295, default 12288):
+    Using default value 12288
+    Last sector, +sectors or +size{K,M,G} (12288-15415295, default 15415295):
+    Using default value 15415295
+    
+    Command (m for help): p
+    
+    Disk /dev/mmcblk0: 7892 MB, 7892631552 bytes
+    32 heads, 32 sectors/track, 15054 cylinders, total 15415296 sectors
+    Units = sectors of 1 * 512 = 512 bytes
+    Sector size (logical/physical): 512 bytes / 512 bytes
+    I/O size (minimum/optimal): 512 bytes / 512 bytes
+    Disk identifier: 0x2fc08b14
+        
+            Device Boot      Start         End      Blocks   Id  System
+    /dev/mmcblk0p1            1024       12287        5632   83  Linux
+    /dev/mmcblk0p2           12288    15415295     7701504   83  Linux
+        
+    Command (m for help): w
+    The partition table has been altered!
+    
+    Calling ioctl() to re-read partition table.
+    
+    WARNING: Re-reading the partition table failed with error 16: Device or resource busy.
+    The kernel still uses the old table. The new table will be used at
+    the next reboot or after you run partprobe(8) or kpartx(8)
+    Syncing disks.
+    root@cubox-i:~# reboot
+
+Resize and then check new usage.  Now 7.3GB and 6% used.
+
+    root@cubox-i:~# resize2fs /dev/root
+    resize2fs 1.42.5 (29-Jul-2012)
+    Filesystem at /dev/root is mounted on /; on-line resizing required
+    old_desc_blocks = 1, new_desc_blocks = 1
+    Performing an on-line resize of /dev/root to 1925376 (4k) blocks.
+    The filesystem on /dev/root is now 1925376 blocks long.
+    
+    root@cubox-i:~# df -h /
+    Filesystem      Size  Used Avail Use% Mounted on
+    /dev/root       7.3G  379M  6.6G   6% /
+    root@cubox-i:~#
