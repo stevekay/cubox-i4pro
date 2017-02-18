@@ -28,21 +28,23 @@
 
 ## Filesystem contents
 
-    root@cubox-i:~# mount -o ro /dev/mmcblk0p1 /mnt
-    root@cubox-i:~# find /mnt -ls
-         2    1 drwxr-xr-x   5 root     root         1024 Jan 28  2014 /mnt
-        11   12 drwx------   2 root     root        12288 Jan 28  2014 /mnt/lost+found
-        12    1 drwxr-xr-x   2 root     root         1024 Jan 28  2014 /mnt/boot
-        13 4613 -rw-r--r--   1 root     root      4703740 Jan 28  2014 /mnt/boot/uImage
-        14  630 -rwxr-xr-x   1 root     root       640496 Jan 28  2014 /mnt/busybox
-        15    1 -rwxr-xr-x   1 root     root          854 Jan 28  2014 /mnt/init
-        16    3 -rw-r--r--   1 root     root         2268 Jan 28  2014 /mnt/arch-boot.tar.xz
-        17    1 drwxr-xr-x   2 root     root         1024 Jan 28  2014 /mnt/root
-    root@cubox-i:~# file /mnt/boot/uImage
-    /mnt/boot/uImage: u-boot legacy uImage, Linux-3.0.35-8, Linux/ARM, OS Kernel Image (Not compressed), 4703676 bytes, Mon Jan 27 00:27:21 2014, Load Address: 0x10008000, Entry Point: 0x10008000, Header CRC: 0x2CBDA85C, Data CRC: 0x7E2A454B
-    root@cubox-i:~# file /mnt/busybox
-    /mnt/busybox: ELF 32-bit LSB executable, ARM, version 1 (SYSV), statically linked, stripped
-    root@cubox-i:~# cat /mnt/init
+    root@cubox-i:~# df -h /boot
+    Filesystem      Size  Used Avail Use% Mounted on
+    /dev/mmcblk0p1  5.4M  5.2M  167K  97% /boot
+    root@cubox-i:~# find /boot -ls
+         2    1 drwxr-xr-x   5 root     root         1024 Jan 28  2014 /boot
+        11   12 drwx------   2 root     root        12288 Jan 28  2014 /boot/lost+found
+        12    1 drwxr-xr-x   2 root     root         1024 Jan 28  2014 /boot/boot
+        13 4613 -rw-r--r--   1 root     root      4703740 Jan 28  2014 /boot/boot/uImage
+        14  630 -rwxr-xr-x   1 root     root       640496 Jan 28  2014 /boot/busybox
+        15    1 -rwxr-xr-x   1 root     root          854 Jan 28  2014 /boot/init
+        16    3 -rw-r--r--   1 root     root         2268 Jan 28  2014 /boot/arch-boot.tar.xz
+        17    1 drwxr-xr-x   2 root     root         1024 Jan 28  2014 /boot/root
+    root@cubox-i:~# file /boot/boot/uImage
+    /boot/boot/uImage: u-boot legacy uImage, Linux-3.0.35-8, Linux/ARM, OS Kernel Image (Not compressed), 4703676 bytes, Mon Jan 27 00:27:21 2014, Load Address: 0x10008000, Entry Point: 0x10008000, Header CRC: 0x2CBDA85C, Data CRC: 0x7E2A454B
+    root@cubox-i:~# file /boot/busybox
+    /boot/busybox: ELF 32-bit LSB executable, ARM, version 1 (SYSV), statically linked, stripped
+    root@cubox-i:~# cat /boot/init
     #!/busybox sh
     /busybox mkdir -p /root
     /busybox mount -t tmpfs none /root
@@ -84,9 +86,5 @@
     
     cd /
     exec /init
-    root@cubox-i:~# tar tvJf /mnt/arch-boot.tar.xz
-    -rw-r--r-- peltz/peltz    1228 2014-01-28 01:36 README
-    -rwxr-xr-x peltz/peltz    1540 1970-01-01 00:02 arch-fetch
-    -rwxr-xr-x peltz/peltz    1431 2014-01-28 05:00 arch-extract
-    -rwxr-xr-x peltz/peltz    1088 2014-01-28 17:12 arch-chroot
-    root@cubox-i:~#
+    root@cubox-i:#
+    
